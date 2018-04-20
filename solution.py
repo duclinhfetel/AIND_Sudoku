@@ -43,9 +43,31 @@ def naked_twins(values):
     and because it is simpler (since the reduce_puzzle function already calls this
     strategy repeatedly).
     """
-    # TODO: Implement this function!
+    twin_boxs = []
+    for box in values.keys():
+        if len(values[box]) == 2:
+            twin_boxs.append(box)
     
-
+    #print (twin_boxs)
+    naked_twins = []
+    for box1 in twin_boxs:
+        #print (box1)
+        for box2 in peers[box1]:
+            if set(values[box1]) == set(values[box2]):
+                naked_twins.append([box1,box2])
+    for i in range(len(naked_twins)):
+        box1 = naked_twins[i][0]
+        box2 = naked_twins[i][1]
+        # 1- compute intersection of peers
+        peers1 = set(peers[box1])
+        peers2 = set(peers[box2])
+        peers_int = peers1 & peers2
+        # 2- Delete the two digits in naked twins from all common peers.
+        for peer_val in peers_int:
+            if len(values[peer_val])>2:
+                for rm_val in values[box1]:
+                    values = assign_value(values, peer_val, values[peer_val].replace(rm_val,''))
+    return values
 
 def eliminate(values):
     """Apply the eliminate strategy to a Sudoku puzzle
@@ -113,6 +135,7 @@ def reduce_puzzle(values):
         The values dictionary after continued application of the constraint strategies
         no longer produces any changes, or False if the puzzle is unsolvable 
     """
+
     stalled = False
     while not stalled:
         # Check how many boxes have a determined value
@@ -121,6 +144,8 @@ def reduce_puzzle(values):
         values = eliminate(values)
         # Use the Only Choice Strategy
         values = only_choice(values)
+        # Use the naked twin Strategy
+        values = naked_twins(values)
         # Check how many boxes have a determined value, to compare
         solved_values_after = len([box for box in values.keys() if len(values[box]) == 1])
         # If no new values were added, stop the loop.
@@ -188,9 +213,14 @@ def solve(grid):
 
 if __name__ == "__main__":
     diag_sudoku_grid = '2.............62....1....7...6..8...3...9...7...6..4...4....8....52.............3'
-    display(grid2values(diag_sudoku_grid))
+    # display(grid2values(diag_sudoku_grid))
     result = solve(diag_sudoku_grid)
     display(result)
+    # v = grid2values(diag_sudoku_grid)
+    # v = eliminate(v)
+    # v = only_choice(v)
+    # v = naked_twins(v)
+    #display(v)
 
     try:
         import PySudoku
