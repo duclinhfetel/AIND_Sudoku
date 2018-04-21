@@ -49,15 +49,15 @@ def naked_twins(values):
             twin_boxs.append(box)
     
     #print (twin_boxs)
-    naked_twins = []
+    naked_twin = []
     for box1 in twin_boxs:
         #print (box1)
         for box2 in peers[box1]:
             if set(values[box1]) == set(values[box2]):
-                naked_twins.append([box1,box2])
-    for i in range(len(naked_twins)):
-        box1 = naked_twins[i][0]
-        box2 = naked_twins[i][1]
+                naked_twin.append([box1,box2])
+    for i in range(len(naked_twin)):
+        box1 = naked_twin[i][0]
+        box2 = naked_twin[i][1]
         # 1- compute intersection of peers
         peers1 = set(peers[box1])
         peers2 = set(peers[box2])
